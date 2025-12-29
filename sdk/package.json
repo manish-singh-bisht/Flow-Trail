@@ -1,5 +1,5 @@
 {
-  "name": "@flow-trail/core",
+  "name": "@flow-trail/sdk",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
