@@ -116,7 +116,10 @@ export default function FlowDetail() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <button onClick={() => navigate('/')} className="text-blue-600 hover:text-blue-800 mb-4">
+        <button
+          onClick={() => navigate('/')}
+          className="text-blue-600 cursor-pointer hover:text-blue-800 mb-4"
+        >
           ← Back to Flows
         </button>
         <h1 className="text-3xl font-bold">{flow.name}</h1>
