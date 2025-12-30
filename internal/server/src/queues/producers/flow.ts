@@ -3,7 +3,7 @@ import type { FlowPayload } from '@flow-trail/shared';
 import type { FlowJobData } from '../types/flow-processing.js';
 import { getRedisClient } from '../../redis/client.js';
 
-const flowQueue = new Queue('flow-processing', {
+export const flowQueue = new Queue('flow-processing', {
   connection: getRedisClient(),
   defaultJobOptions: {
     attempts: 5,

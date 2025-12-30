@@ -4,12 +4,26 @@ import { prisma } from './prisma/prisma.js';
 import { closeFlowQueue } from './queues/producers/flow.js';
 import { startFlowWorker, closeFlowWorker } from './queues/consumers/flow.js';
 import flowRoutes from './routes/flow.js';
-import { closeRedisConnection, startRedisConnection } from './redis/client.js';
+import { closeRedisConnection, getRedisClient } from './redis/client.js';
+import { createBullBoard } from '@bull-board/api';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { ExpressAdapter } from '@bull-board/express';
+import { flowQueue } from './queues/producers/flow.js';
 
 const app: Express = express();
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/admin/queues');
+
+createBullBoard({
+  queues: [new BullMQAdapter(flowQueue)],
+  serverAdapter,
+});
+
+app.use('/admin/queues', serverAdapter.getRouter());
 
 // Health check
 app.get('/health', (_req: Request, res: Response) => {
@@ -43,7 +57,6 @@ export async function startServer(): Promise<void> {
     // 1. Connect to database
     console.log('Connecting to database...');
     await prisma.$connect();
-    await startRedisConnection();
     console.log('Database connected');
 
     // 2. Start workers
@@ -55,6 +68,7 @@ export async function startServer(): Promise<void> {
       console.log('Server started successfully');
       console.log(`Environment: ${env.NODE_ENV}`);
       console.log(`Health check: http://localhost:${env.PORT}/health`);
+      console.log(`BullMQ UI: http://localhost:${env.PORT}/admin/queues`);
     });
 
     httpServer.on('error', (err: Error) => {

@@ -6,8 +6,8 @@ export type StepStatusType = z.infer<typeof StepStatusSchema>;
 
 export const FlowSchema = z.object({
   name: z.string().min(1, 'Flow name is required'),
-  createdAt: z.date(),
-  finishedAt: z.date().nullable(),
+  createdAt: z.coerce.date(),
+  finishedAt: z.coerce.date().nullable(),
 });
 
 export type FlowType = z.infer<typeof FlowSchema>;
@@ -31,12 +31,12 @@ export const StepSchema = z.object({
   // version if the step retries, we store all the versions
   version: z.number().int().positive('Version must be a positive integer'),
   flow: z.string().min(1, 'Flow name is required'),
-  createdAt: z.date(),
+  createdAt: z.coerce.date(),
   position: z.number().int().nonnegative('Position must be non-negative'),
   status: StepStatusSchema,
   reason: z.string(),
-  startedAt: z.date().nullable(),
-  finishedAt: z.date().nullable(),
+  startedAt: z.coerce.date().nullable(),
+  finishedAt: z.coerce.date().nullable(),
   // within steps we allow to store multiple observations/records of data, not just input/output
   observations: z.array(ObservationSchema),
 });

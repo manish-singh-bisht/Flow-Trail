@@ -31,9 +31,3 @@ export async function closeRedisConnection(): Promise<void> {
     redisClient = null;
   }
 }
-
-export async function startRedisConnection(): Promise<void> {
-  const client = getRedisClient();
-  await client.connect();
-  redisClient = client;
-}

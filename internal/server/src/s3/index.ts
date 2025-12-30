@@ -1,7 +1,48 @@
-import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  PutObjectCommand,
+  GetObjectCommand,
+  HeadBucketCommand,
+  CreateBucketCommand,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3Client } from './client.js';
 import { env } from '../config/env.js';
+
+export async function ensureBucketExists(): Promise<void> {
+  try {
+    await s3Client.send(
+      new HeadBucketCommand({
+        Bucket: env.S3_BUCKET,
+      })
+    );
+    console.log(`S3 bucket "${env.S3_BUCKET}" already exists`);
+  } catch (error: any) {
+    if (error.name === 'NotFound' || error.name === 'NoSuchBucket') {
+      console.log(`Creating S3 bucket "${env.S3_BUCKET}"...`);
+      try {
+        await s3Client.send(
+          new CreateBucketCommand({
+            Bucket: env.S3_BUCKET,
+          })
+        );
+        console.log(`S3 bucket "${env.S3_BUCKET}" created successfully`);
+      } catch (createError: any) {
+        if (
+          createError.name === 'BucketAlreadyExists' ||
+          createError.name === 'BucketAlreadyOwnedByYou'
+        ) {
+          console.log(`S3 bucket "${env.S3_BUCKET}" already exists (race condition)`);
+        } else {
+          throw new Error(
+            `Failed to create S3 bucket "${env.S3_BUCKET}": ${createError.message || createError}`
+          );
+        }
+      }
+    } else {
+      throw new Error(`Failed to check S3 bucket "${env.S3_BUCKET}": ${error.message || error}`);
+    }
+  }
+}
 
 export async function uploadToS3(key: string, data: any): Promise<string> {
   const command = new PutObjectCommand({
@@ -11,8 +52,19 @@ export async function uploadToS3(key: string, data: any): Promise<string> {
     ContentType: 'application/json',
   });
 
-  await s3Client.send(command);
-  return key;
+  try {
+    await s3Client.send(command);
+    return key;
+  } catch (error: any) {
+    if (error.name === 'NoSuchBucket') {
+      console.log('Checking S3 bucket...');
+      await ensureBucketExists();
+      console.log('S3 bucket created successfully');
+      await s3Client.send(command);
+      return key;
+    }
+    throw error;
+  }
 }
 
 export async function getFromS3(key: string): Promise<any> {

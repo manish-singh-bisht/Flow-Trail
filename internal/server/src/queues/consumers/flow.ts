@@ -8,7 +8,7 @@ let flowWorker: Worker<FlowJobData, FlowJobResult> | null = null;
 
 export async function startFlowWorker(): Promise<void> {
   flowWorker = new Worker<FlowJobData, FlowJobResult>(
-    'process-flow',
+    'flow-processing',
     async (job) => {
       const { payload, idempotencyKey } = job.data;
 

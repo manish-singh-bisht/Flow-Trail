@@ -80,6 +80,6 @@ export class Flow {
       })),
     });
 
-    this.transport.send(payload);
+    await this.transport.send(payload);
   }
 }

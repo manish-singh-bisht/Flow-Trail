@@ -7,6 +7,7 @@ datasource db {
     provider = "postgresql"
 }
 
+// todo: do we need status field?
 model Flow {
     id             String    @id @default(uuid())
     name           String
