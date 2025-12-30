@@ -1,7 +1,7 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { FlowPayloadSchema } from '@flow-trail/shared';
 import { addFlowToQueue } from '../queues/producers/flow.js';
-import { getAllFlows, getFlowByIdDetails } from '../services/flow.js';
+import { getAllFlows, getFlowById, getFlowByIdDetails } from '../services/flow.js';
 import z from 'zod';
 
 const router = Router();
@@ -53,8 +53,34 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-// GET /api/flows/:id - Get flow details
+// GET /api/flows/:id - Get flow details without fetching observation data
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const validatedId = z.uuid().safeParse(id);
+    if (!validatedId.success) {
+      return res.status(400).json({
+        error: 'Invalid ID',
+      });
+    }
+
+    const flow = await getFlowById(validatedId.data);
+
+    if (!flow) {
+      return res.status(404).json({
+        error: 'Flow not found',
+      });
+    }
+
+    res.json(flow);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/flows/:id - Get flow details with fetching observation data
+router.get('/:id/details', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 

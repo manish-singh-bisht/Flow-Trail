@@ -65,6 +65,35 @@ export async function getAllFlows(options: PaginationOptions = {}) {
   };
 }
 
+export async function getFlowById(id: string) {
+  return await prisma.flow.findUnique({
+    where: { id },
+    include: {
+      steps: {
+        orderBy: {
+          position: 'asc',
+        },
+        include: {
+          observations: {
+            orderBy: {
+              createdAt: 'asc',
+            },
+            select: {
+              // Only return metadata, not the actual data
+              id: true,
+              name: true,
+              version: true,
+              s3Url: true,
+              queryable: true,
+              createdAt: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 // TODO: for now we send everything, but we should only send the necessary data
 export async function getFlowByIdDetails(id: string) {
   const flow = await prisma.flow.findUnique({
