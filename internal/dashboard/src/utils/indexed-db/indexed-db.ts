@@ -4,6 +4,8 @@ export const STORE_NAME = 'observations';
 
 let db: IDBDatabase | null = null;
 
+// todo: remove data after 3 days
+// todo prevent data from going over 300mb, remove old in such cases
 export async function initDB(): Promise<IDBDatabase> {
   if (db) return db;
 
