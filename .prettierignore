@@ -1,0 +1,9 @@
+node_modules
+dist
+*.lock
+*.log
+.env
+.env.local
+coverage
+.DS_Store
+internal/server/src/prisma/generated

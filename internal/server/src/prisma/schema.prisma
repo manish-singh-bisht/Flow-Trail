@@ -1,0 +1,64 @@
+generator client {
+    provider = "prisma-client"
+    output   = "./generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model Flow {
+    id             String    @id @default(uuid())
+    name           String
+    idempotencyKey String    @unique
+    createdAt      DateTime  @default(now())
+    finishedAt     DateTime?
+    steps          Step[]
+
+    @@unique([name, idempotencyKey])
+    @@index([idempotencyKey])
+    @@index([name])
+}
+
+enum StepStatus {
+    pending
+    running
+    completed
+    failed
+}
+
+model Step {
+    id           String        @id @default(uuid())
+    name         String
+    version      Int           @default(1)
+    flowId       String
+    position     Int
+    status       StepStatus
+    reason       String
+    startedAt    DateTime?
+    finishedAt   DateTime?
+    createdAt    DateTime      @default(now())
+    observations Observation[]
+
+    flow Flow @relation(fields: [flowId], references: [id], onDelete: Cascade)
+
+    @@unique([flowId, name, version])
+    @@index([flowId, name, version])
+}
+
+model Observation {
+    id      String @id @default(uuid())
+    stepId  String
+    name    String
+    version Int    @default(1)
+
+    // TODO: do we need to store all in s3? or some can be stored in the database?
+    s3Url     String
+    queryable Json?
+    createdAt DateTime @default(now())
+
+    step Step @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+    @@unique([stepId, name, version])
+    @@index([stepId, name, version])
+}

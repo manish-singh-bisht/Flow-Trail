@@ -1,4 +1,4 @@
-import type { FlowType } from './types.js';
+import type { FlowType } from '@flow-trail/shared';
 import { Flow } from './flow.js';
 
 // Type exports
@@ -8,8 +8,7 @@ export type {
   ObservationType,
   FlowPayload,
   StepStatusType,
-} from './types.js';
-
+} from '@flow-trail/shared';
 
 export function createFlow(name: FlowType['name']): Flow {
   return new Flow(name);

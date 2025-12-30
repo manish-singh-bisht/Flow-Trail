@@ -10,7 +10,7 @@ export class Transport {
 
   constructor(options?: TransportOptions) {
     const validated = TransportOptionsSchema.parse(options);
-  
+
     this.timeout = validated.timeout;
     this.maxRetries = validated.maxRetries;
     this.retryDelay = validated.retryDelay;
@@ -24,7 +24,7 @@ export class Transport {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            "idempotency-key": crypto.randomUUID(), // idempotency key to prevent duplicate requests
+            'idempotency-key': crypto.randomUUID(), // idempotency key to prevent duplicate requests
           },
           body: JSON.stringify(payload),
         });

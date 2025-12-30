@@ -1,4 +1,4 @@
-import { ObservationSchema, type ObservationType } from './types.js';
+import { ObservationSchema, type ObservationType } from '@flow-trail/shared';
 import { calculateSize, validateObservationSize } from './utils.js';
 
 export class Observation {
@@ -10,7 +10,7 @@ export class Observation {
 
   constructor(options: ObservationType) {
     const validated = ObservationSchema.parse(options);
-    
+
     this.name = validated.name;
     this.step = validated.step;
     this.queryable = validated.queryable;
