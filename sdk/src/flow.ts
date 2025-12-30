@@ -47,9 +47,9 @@ export class Flow {
   }
 
   async finish(): Promise<void> {
-    // idempotency check
+    // prevents against invoking finish multiple times
     if (this._finishedAt) {
-      return;
+      throw new Error('Flow already finished');
     }
 
     this._finishedAt = new Date();

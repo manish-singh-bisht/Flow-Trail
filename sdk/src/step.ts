@@ -53,7 +53,6 @@ export class Step {
     return this._finishedAt;
   }
 
-  //todo: make it more robust and handle nested objects
   // queryable data has to be of format, array of objects
   // example:
   //  [
@@ -88,9 +87,9 @@ export class Step {
   }
 
   finish({ status, reason }: { status: StepType['status']; reason: StepType['reason'] }): void {
-    // idempotency check
+    // prevents against invoking finish multiple times
     if (this._finishedAt) {
-      return;
+      throw new Error('Step already finished');
     }
 
     this._status = StepStatusSchema.parse(status);
