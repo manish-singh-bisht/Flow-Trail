@@ -23,8 +23,10 @@ help:
 	@echo "Development:"
 	@echo "  make dev              - Start all dev servers (server, demo, dashboard)"
 	@echo ""
+	@echo "Environment:"
+	@echo "  make setup-env        - Setup environment files"
 	@echo "Setup:"
-	@echo "  make setup            - Full setup: install-all, docker-up, build-all, migrate"
+	@echo "  make setup            - Full setup: setup-env, install-all, docker-up, build-all, migrate"
 	@echo ""
 
 install-all:
@@ -112,4 +114,19 @@ dev:
 	cd internal/dashboard && npm run dev & \
 	wait
 
-setup: install-all docker-up build-all migrate
+setup-env:
+	@echo "📋 Setting up environment files..."
+	@if [ -f internal/server/.env.example ] && [ ! -f internal/server/.env ]; then \
+		cp internal/server/.env.example internal/server/.env; \
+		echo "✅ Created internal/server/.env"; \
+	fi
+	@if [ -f internal/dashboard/.env.example ] && [ ! -f internal/dashboard/.env ]; then \
+		cp internal/dashboard/.env.example internal/dashboard/.env; \
+		echo "✅ Created internal/dashboard/.env"; \
+	fi
+	@if [ -f demo/.env.example ] && [ ! -f demo/.env ]; then \
+		cp demo/.env.example demo/.env; \
+		echo "✅ Created demo/.env"; \
+	fi
+
+setup: setup-env install-all docker-up build-all migrate
