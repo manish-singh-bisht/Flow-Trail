@@ -1,6 +1,6 @@
 # Flow Trail
 
-X-Ray system for debugging multi-step, non-deterministic algorithmic processes.
+System for providing insights into multi-step processes, both deterministic and non-deterministic.
 
 ## Components
 
@@ -17,7 +17,6 @@ X-Ray system for debugging multi-step, non-deterministic algorithmic processes.
 - Docker
 
 ### Steps
-
 
 1. Fork and clone the repo.
 2. Run `make setup` for the first time. Ensure Docker is running.
