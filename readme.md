@@ -18,11 +18,14 @@ X-Ray system for debugging multi-step, non-deterministic algorithmic processes.
 
 ### Steps
 
+
 1. Fork and clone the repo.
 2. Run `make setup` for the first time. Ensure Docker is running.
 3. To run, use `make dev`.
 
 ## Approach
+
+<img width="1405" height="547" alt="hld" src="https://github.com/user-attachments/assets/64148946-785a-40f1-83f8-3710931c4f17" />
 
 - SDK collects all observations in memory and sends them via HTTP POST(`retried exponentially with jitter`) when `flow.finish()` is called. This `all-or-nothing approach simplifies implementation` and ensures complete flow data.
 
