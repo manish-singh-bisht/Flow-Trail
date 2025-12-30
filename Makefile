@@ -124,9 +124,6 @@ setup-env:
 		cp internal/dashboard/.env.example internal/dashboard/.env; \
 		echo "✅ Created internal/dashboard/.env"; \
 	fi
-	@if [ -f demo/.env.example ] && [ ! -f demo/.env ]; then \
-		cp demo/.env.example demo/.env; \
-		echo "✅ Created demo/.env"; \
-	fi
+
 
 setup: setup-env install-all docker-up build-all migrate
