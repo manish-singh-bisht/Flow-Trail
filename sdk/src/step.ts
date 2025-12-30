@@ -53,6 +53,16 @@ export class Step {
     return this._finishedAt;
   }
 
+  //todo: make it more robust and handle nested objects
+  // queryable data has to be of format, array of objects
+  // example:
+  //  [
+  //     {
+  //       id: string;
+  //       score: number;
+  //     }
+  //   ]
+
   capture({
     name,
     data,

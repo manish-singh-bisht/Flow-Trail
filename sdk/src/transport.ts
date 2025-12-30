@@ -1,4 +1,8 @@
-import { TransportOptionsSchema, type FlowPayload, type TransportOptions } from './types.js';
+import {
+  TransportOptionsSchema,
+  type FlowPayload,
+  type TransportOptions,
+} from '@flow-trail/shared';
 import { exponentialBackoff } from './utils.js';
 
 export class Transport {
@@ -9,7 +13,7 @@ export class Transport {
   public readonly retryDelay: TransportOptions['retryDelay'];
 
   constructor(options?: TransportOptions) {
-    const validated = TransportOptionsSchema.parse(options);
+    const validated = TransportOptionsSchema.parse(options ?? {});
 
     this.timeout = validated.timeout;
     this.maxRetries = validated.maxRetries;

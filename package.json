@@ -22,5 +22,8 @@
   },
   "devDependencies": {
     "prettier": "^3.7.4"
+  },
+  "dependencies": {
+    "@bull-board/express": "^6.16.2"
   }
 }
