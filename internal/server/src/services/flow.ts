@@ -107,6 +107,8 @@ export async function getFlowByIdDetails(id: string) {
               };
             } catch (error) {
               console.error(`Failed to fetch observation data for ${observation.s3Url}:`, error);
+
+              // todo: retry+ some other way to provide backup
               return {
                 ...observation,
                 data: null,
