@@ -49,6 +49,7 @@ X-Ray system for debugging multi-step, non-deterministic algorithmic processes.
 ## Future Improvements
 
 - TODO's present in the codebase
+- PII data encryption
 - Multi-step push: Send observations incrementally to preserve partial data on flow failure
 - HTTP streaming: Stream large payloads, batch for small flows
 - Team-based API keys and rate limiting
