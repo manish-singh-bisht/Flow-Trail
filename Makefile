@@ -45,16 +45,25 @@ install-all:
 	@echo "✅ All dependencies installed!"
 
 # Docker targets
+# Docker targets
 docker-up:
 	@echo "🐳 Starting Docker services..."
-	cd internal/server && docker-compose up -d
+	@if command -v docker-compose > /dev/null 2>&1; then \
+		cd internal/server && docker-compose up -d; \
+	else \
+		cd internal/server && docker compose up -d; \
+	fi
 	@echo "⏳ Waiting for services to be healthy..."
 	@sleep 5
 	@echo "✅ Docker services started!"
 
 docker-down:
 	@echo "🐳 Stopping Docker services..."
-	cd internal/server && docker-compose down
+	@if command -v docker-compose > /dev/null 2>&1; then \
+		cd internal/server && docker-compose down; \
+	else \
+		cd internal/server && docker compose down; \
+	fi
 	@echo "✅ Docker services stopped!"
 
 docker-restart: docker-down docker-up
@@ -62,10 +71,10 @@ docker-restart: docker-down docker-up
 # Build targets
 
 build-all: install-all
-	@echo "🔨 Building SDK..."
-	cd sdk && npm run build
 	@echo "🔨 Building shared..."
 	cd shared && npm run build
+	@echo "🔨 Building SDK..."
+	cd sdk && npm run build
 	@echo "🔨 Building server..."
 	cd internal/server && npm run build
 	@echo "🔨 Building demo..."

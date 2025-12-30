@@ -11,7 +11,6 @@ interface ObservationItemProps {
 }
 
 export default function ObservationItem({
-  observation,
   data,
   dataLoaded,
   isLoading,
@@ -37,9 +36,7 @@ export default function ObservationItem({
 
   // Handle null or undefined data
   if (data === null || data === undefined) {
-    return (
-      <div className="text-sm text-gray-500">No data available</div>
-    );
+    return <div className="text-sm text-gray-500">No data available</div>;
   }
 
   // Handle array data
@@ -62,9 +59,7 @@ export default function ObservationItem({
           </div>
         )}
         {!isFiltered && (
-          <div className="text-xs text-gray-500 mb-2">
-            Showing {data.length} items
-          </div>
+          <div className="text-xs text-gray-500 mb-2">Showing {data.length} items</div>
         )}
         <div className="space-y-2 max-h-96 overflow-y-auto">
           {data.map((item, index) => (
