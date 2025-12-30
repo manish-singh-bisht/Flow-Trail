@@ -1,10 +1,10 @@
 import { Queue } from 'bullmq';
-import { getQueueConnection } from '../config.js';
 import type { FlowPayload } from '@flow-trail/shared';
 import type { FlowJobData } from '../types/flow-processing.js';
+import { getRedisClient } from '../../redis/client.js';
 
 const flowQueue = new Queue('flow-processing', {
-  connection: getQueueConnection(),
+  connection: getRedisClient(),
   defaultJobOptions: {
     attempts: 5,
     backoff: {

@@ -3,8 +3,8 @@ import { env } from './config/env.js';
 import { prisma } from './prisma/prisma.js';
 import { closeFlowQueue } from './queues/producers/flow.js';
 import { startFlowWorker, closeFlowWorker } from './queues/consumers/flow.js';
-import { closeQueueConnection } from './queues/config.js';
 import flowRoutes from './routes/flow.js';
+import { closeRedisConnection, startRedisConnection } from './redis/client.js';
 
 const app: Express = express();
 
@@ -43,6 +43,7 @@ export async function startServer(): Promise<void> {
     // 1. Connect to database
     console.log('Connecting to database...');
     await prisma.$connect();
+    await startRedisConnection();
     console.log('Database connected');
 
     // 2. Start workers
@@ -105,9 +106,9 @@ async function shutdown(): Promise<void> {
 
   // 4. Close Redis connection
   shutdownPromises.push(
-    closeQueueConnection()
+    closeRedisConnection()
       .then(() => console.log('Redis connection closed'))
-      .catch((err) => console.error('Error closing Redis:', err))
+      .catch((err: Error) => console.error('Error closing Redis:', err))
   );
 
   // 5. Close database connection

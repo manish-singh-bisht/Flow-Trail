@@ -1,9 +1,10 @@
 import { FlowPayloadSchema, StepStatusSchema, type FlowPayload } from '@flow-trail/shared';
 import type { FlowJobResult } from '../queues/types/flow-processing.js';
 import { prisma } from '../prisma/prisma.js';
-import { uploadToS3, getS3Url } from '../s3/index.js';
+import { uploadToS3, getS3Url, getFromS3 } from '../s3/index.js';
 import { randomUUID } from 'crypto';
 import { Prisma } from '../prisma/generated/prisma/client.js';
+import { getObservationData } from '../redis/flow.js';
 
 interface PreparedObservation {
   observationPayload: FlowPayload['steps'][number]['observations'][number];
@@ -66,7 +67,7 @@ export async function getAllFlows(options: PaginationOptions = {}) {
 
 // TODO: for now we send everything, but we should only send the necessary data
 export async function getFlowByIdDetails(id: string) {
-  return await prisma.flow.findUnique({
+  const flow = await prisma.flow.findUnique({
     where: { id },
     include: {
       steps: {
@@ -83,6 +84,42 @@ export async function getFlowByIdDetails(id: string) {
       },
     },
   });
+
+  if (!flow) {
+    return null;
+  }
+
+  // Fetch observation data from cache or S3
+  const flowWithData = {
+    ...flow,
+    steps: await Promise.all(
+      flow.steps.map(async (step) => ({
+        ...step,
+        observations: await Promise.all(
+          step.observations.map(async (observation) => {
+            try {
+              // Get data from cache or S3
+              const data = await getObservationData(observation.s3Url, getFromS3);
+
+              return {
+                ...observation,
+                data,
+              };
+            } catch (error) {
+              console.error(`Failed to fetch observation data for ${observation.s3Url}:`, error);
+              return {
+                ...observation,
+                data: null,
+                error: 'Failed to fetch observation data',
+              };
+            }
+          })
+        ),
+      }))
+    ),
+  };
+
+  return flowWithData;
 }
 
 export async function processFlow(

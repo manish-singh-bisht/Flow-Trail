@@ -1,8 +1,8 @@
 import { Worker } from 'bullmq';
-import { getQueueConnection } from '../config.js';
 import type { FlowJobData, FlowJobResult } from '../types/flow-processing.js';
 import { processFlow } from '../../services/flow.js';
 import { FlowPayloadSchema } from '@flow-trail/shared';
+import { getRedisClient } from '../../redis/client.js';
 
 let flowWorker: Worker<FlowJobData, FlowJobResult> | null = null;
 
@@ -21,7 +21,7 @@ export async function startFlowWorker(): Promise<void> {
       return result;
     },
     {
-      connection: getQueueConnection(),
+      connection: getRedisClient(),
       concurrency: 5,
       limiter: {
         max: 100,

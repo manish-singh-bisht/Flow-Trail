@@ -20,4 +20,6 @@ export class Observation {
     const size = calculateSize(validated.data);
     validateObservationSize(size);
   }
+
+  // todo: make an api that masks PII data
 }
