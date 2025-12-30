@@ -5,11 +5,11 @@ const EnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']),
   PORT: z.coerce.number().default(3000),
 
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.url(),
 
-  REDIS_URL: z.string().url(),
+  REDIS_URL: z.url(),
 
-  S3_ENDPOINT: z.string().url(),
+  S3_ENDPOINT: z.url(),
   S3_ACCESS_KEY_ID: z.string(),
   S3_SECRET_ACCESS_KEY: z.string(),
   S3_BUCKET: z.string(),
