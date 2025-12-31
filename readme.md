@@ -38,6 +38,7 @@ See [usage.md](./usage.md) for detailed usage examples and API documentation.
 ## Approach
 
 <img width="1405" height="547" alt="hld" src="https://github.com/user-attachments/assets/64148946-785a-40f1-83f8-3710931c4f17" />
+<img width="633" height="856" alt="db schema" src="https://github.com/user-attachments/assets/572f62e6-2b42-4377-8a39-e56f3148be5a" />
 
 - SDK collects all observations in memory and sends them via HTTP POST(`retried exponentially with jitter`) when `flow.finish()` is called. This `all-or-nothing approach simplifies implementation` and ensures complete flow data.
 
