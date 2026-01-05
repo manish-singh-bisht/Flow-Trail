@@ -8,8 +8,6 @@ System for providing insights into multi-step processes, both deterministic and 
 - [Setup](#setup)
 - [Usage](#usage)
 - [Approach](#approach)
-- [Other Design Decisions That Were Rejected](#other-design-decisions-that-were-rejected)
-- [Future Improvements](#future-improvements)
 
 ## Components
 
